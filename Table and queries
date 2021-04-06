@@ -1,0 +1,68 @@
+#creating a table
+CREATE TABLE student(
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_name VARCHAR(20) NOT NULL,
+    major VARCHAR(20) UNIQUE DEFAULT('UNDECIDED')
+);
+#adding a column to the existing table
+ ALTER TABLE student ADD gpa DECIMAL(3,2);
+#DELETING A COLUMN FROM THE TABLE
+ ALTER TABLE student DROP COLUMN GPA;
+ DESCRIBE student;
+
+
+
+#INSERTING THE DATA
+  INSERT INTO student VALUES(1,'JACK','BIOLOGY');
+  INSERT INTO student VALUES(2,'KATE','SOCIOLOGY');
+  INSERT INTO student VALUES(3,'CLAIR','ENGLISH');
+  INSERT INTO student VALUES(4,'JACK','MATHS');
+  INSERT INTO student VALUES(5,'MIKE','COMP SCIENCE');
+#IF NO MAJORS FOR SPECIFIC STUDENT
+ INSERT INTO student(student_id,student_name) VALUES(6,'EMINEM');
+ INSERT INTO student(student_name,major) VALUES('HARRY','HINDI');
+
+#VIEWS THE TABLE 
+ #SELECT * FROM student
+
+
+#DELETING THE WHOLE TABLE
+ #DROP TABLE student;
+
+#UPDATING THE ROWS
+  UPDATE student
+  SET major='SPANISH'
+  WHERE major='ENGLISH';
+  
+  UPDATE student
+  SET major='ENGLISH'
+  WHERE student_id=4;
+
+  UPDATE student
+  SET major='FRENCH'
+  where major='HINDI' OR student_id=8;
+
+  UPDATE student
+  SET student_name='TOM',major='undecided'
+  WHERE student_id=6;
+
+  UPDATE student
+  SET major='GERMAN'
+  where major='FRENCH' AND student_id=7;
+
+#DELETING THE ROWS
+DELETE FROM student
+WHERE student_id=7;
+
+
+#VIEWS THE TABLE 
+#  SELECT * FROM student
+
+
+
+#Basic queries
+#SELECT * FROM student;
+#SELECT student_name,student_id FROM student ORDER BY student_id desc;
+SELECT student_name,student_id FROM student WHERE student_id < 5;
+
+
