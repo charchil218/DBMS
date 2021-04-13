@@ -144,3 +144,60 @@ INSERT INTO work_with VALUES(102, 406, 15000);
 INSERT INTO work_with VALUES(105, 406, 130000); 
 
 SELECT * FROM work_with;
+
+
+--some more basic queries
+--find all employees
+SELECT * FROM employee;
+
+---FIND ALL EMPLOYEES ORDERED BY THEIR SALARY
+
+SELECT * FROM employee ORDER BY salary;
+SELECT * FROM employee ORDER BY salary DESC;
+
+--FIND ALL EMPLOYEE ORDERED BY SEX THEN NAME
+
+SELECT * FROM employee ORDER BY sex,first_name,last_name;
+
+
+--FIND FIRST 5 EMPLOYEE FROM THE TABLE
+SELECT * FROM employee LIMIT 5;
+
+---FIRST AND LAST NAME OF EMPLOYEE
+SELECT first_name,last_name FROM employee;
+
+---SELECT FORENAME AND SURNAME (CHANGING THE NAME OF THE COLUMN)
+ SELECT first_name AS forename,last_name AS surname FROM employee;
+
+---FIND OUT ALL THE DIFFERENT GENDER
+
+SELECT DISTINCT sex FROM employee;
+
+
+---FUNCTIONS IN SQL
+#FINDING NO. OF EMPLOYEE
+SELECT COUNT(emp_id) FROM employee;
+
+#FIND HOW MANY EMPLOYEE HAVE SUPERVISORS
+SELECT COUNT(super_id) FROM employee;
+
+#FIND NO. OF FEMALE EMPLOYEE BORN AFTER 1970
+SELECT COUNT(emp_id) FROM employee WHERE sex='F' AND birth_date>'1970-01-01'; 
+
+#FIND AVERAGE OF ALL EMPLOYEE SALARY
+SELECT AVG(salary) FROM employee;
+
+#FIND THE SUM OF ALL EMPLOYEE SALARY
+SELECT SUM(salary) FROM employee; 
+
+#FIND OUT HOW MANY MALES AND HOW MANY FEMALE THERE ARE
+SELECT COUNT(sex),sex FROM employee GROUP BY sex;
+
+#FIND THE TOTAL SALES OF EACH SALESMAN
+
+SELECT emp_id,COUNT(total_sales) FROM work_with GROUP BY emp_id;
+SELECT emp_id,SUM(total_sales) FROM work_with GROUP BY emp_id;
+
+#HOW MUCH MONEY EACH CLIENT SPENT
+SELECT client_id,SUM(total_sales) FROM work_with GROUP BY client_id;
+
