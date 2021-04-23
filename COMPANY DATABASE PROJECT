@@ -201,3 +201,164 @@ SELECT emp_id,SUM(total_sales) FROM work_with GROUP BY emp_id;
 #HOW MUCH MONEY EACH CLIENT SPENT
 SELECT client_id,SUM(total_sales) FROM work_with GROUP BY client_id;
 
+
+
+
+
+
+---WILDCARDS
+
+#FIND ANY CLIENT WHO ARE AN LLC
+SELECT * FROM client WHERE client_name LIKE '%LLC%';
+
+#FIND ANY BRANCH SUPPLIERS WHO ARE IN LABEL BUSINESS
+SELECT * FROM branch_supplier WHERE supplier_name LIKE '%LABELS%';
+
+#FIND ANY EMPLOYEE BORN IN OCTOBER
+SELECT * FROM employee WHERE birth_date LIKE '%-10-%';
+#OR
+SELECT * FROM employee WHERE birth_date LIKE '____-10%';
+
+
+#FIND ANY CLIENT WHO ARE SCHOOLS
+SELECT * FROM client WHERE client_name LIKE '%school%';
+
+
+
+
+
+
+---UNION
+#FIND A LIST OF EMPLOYEES AND BRANCH NAME
+SELECT first_name FROM employee UNION SELECT branch_name FROM branch ;
+
+
+
+
+---JOINS
+
+#LETS INSERT ONE ROW IN BRANCH TABLE
+INSERT INTO branch VALUES(4,'Buffalo',NULL,NULL);
+
+#find all the branches and name of the managers
+SELECT employee.emp_id,employee.first_name,branch.branch_name 
+FROM employee
+JOIN branch
+ON emp_id=mgr_id;
+
+#find all the branches and name of the managers ALONG WITH OTHER WORKERS
+SELECT employee.emp_id,employee.first_name,branch.branch_name 
+FROM employee
+LEFT JOIN branch
+ON emp_id=mgr_id;
+
+#find all the branches and name of the managers INCLUDING ALL MEMBERS FROM BOTH TABLES
+SELECT employee.emp_id,employee.first_name,branch.branch_name 
+FROM employee
+FULL OUTER JOIN branch
+ON emp_id=mgr_id;
+
+
+---NESTED QUERIES
+
+#FIND NAMES OF ALLEMPLOYEERS WHO HAVE SOLD OVER 30,000 TO A SINGLE CLIENT
+SELECT employee.first_name,employee.last_name 
+FROM employee
+WHERE employee.emp_id IN (
+    SELECT work_with.emp_id
+    FROM work_with 
+    WHERE work_with.total_sales > 30000
+);
+
+#find the name of all the clients who are handled by the branch that mochael scott manages 
+SELECT client.client_name 
+FROM client
+WHERE branch_id IN (
+    SELECT employee.branch_id
+    FROM employee
+    WHERE employee.branch_id = 2
+);
+
+
+
+
+
+
+--- ON DELETE SET NULL
+#SINCE 
+#WHILE CREATING THE BRANCH TABLE WE USED ON DELETE SET NULL
+
+DELETE FROM employee
+WHERE emp_id = 102;
+
+SELECT * FROM employee;
+SELECT * FROM branch;
+
+
+---ON DELETE SET CASCADE
+#IN  SUPPLIER TABLE WE USED BRANCH ID AS ON DELETE CASCADE
+
+DELETE FROM branch
+WHERE branch_id=2; 
+
+
+
+---Triggers
+CREATE TABLE trigger_test (
+    message VARCHAR(100)
+);
+
+
+DELIMITER $$
+CREATE
+    TRIGGER my_trigger BEFORE INSERT
+    ON employee
+    FOR EACH ROW BEGIN 
+        INSERT INTO trigger_test VALUES('ADD NEW EMPLOYEE');
+    END$$
+DELIMITER ;
+
+
+INSERT INTO employee
+VALUES(109,'OSCAR','MARTINAZ','1968-02-19','M',69000,106,3);
+
+SELECT * FROM trigger_test;
+
+
+
+DELIMITER $$
+CREATE
+    TRIGGER my_trigger1 BEFORE INSERT
+    ON employee
+    FOR EACH ROW BEGIN 
+        INSERT INTO trigger_test VALUES(NEW.first_name);
+    END$$
+DELIMITER ;
+
+
+INSERT INTO employee
+VALUES(110,'KEVIN','MALONE','1978-02-19','M',69000,106,3);
+
+
+
+DELIMITER $$
+CREATE
+    TRIGGER my_trigger3 BEFORE INSERT
+    ON employee
+    FOR EACH ROW BEGIN 
+         IF NEW.sex = 'M' THEN
+                INSERT INTO trigger_test VALUES('added male employee');
+         ELSEIF NEW.sex = 'F' THEN
+                INSERT INTO trigger_test VALUES('added female');
+         ELSE
+                INSERT INTO trigger_test VALUES('added other employee');
+         END IF;
+    END$$
+DELIMITER ;
+
+
+
+INSERT INTO employee
+VALUES(111,'PAM','BEESLY','1988-02-19','F',69000,106,3);
+
+SELECT * FROM trigger_test;
